@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovelForge Education — AI×創作リテラシー教育プログラム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&family=Noto+Sans+JP:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fafaf8;
+  --bg2:#f2f1ed;
+  --bg3:#eae8e3;
+  --surface:#fff;
+  --navy:#1a2744;
+  --navy-light:#2a3d66;
+  --navy-pale:rgba(26,39,68,.06);
+  --accent:#2563aa;
+  --accent-light:#3b82c4;
+  --accent-pale:rgba(37,99,170,.08);
+  --green:#1a8a5a;
+  --green-pale:rgba(26,138,90,.08);
+  --warm:#b8860b;
+  --warm-pale:rgba(184,134,11,.07);
+  --red:#b84040;
+  --text:#2a2a2a;
+  --text2:#6a6a6a;
+  --text3:#9a9a9a;
+  --border:rgba(0,0,0,.08);
+  --serif:'Noto Serif JP',Georgia,serif;
+  --sans:'Noto Sans JP',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden;font-weight:400}
+::selection{background:var(--accent);color:#fff}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.25s}.d4{transition-delay:.35s}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:12px 32px;display:flex;justify-content:space-between;align-items:center;
+  background:rgba(250,250,248,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);transition:all .3s;
+}
+nav.scrolled{background:rgba(250,250,248,.97);box-shadow:0 1px 12px rgba(0,0,0,.06)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-mark{
+  width:32px;height:32px;border-radius:6px;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:900;font-size:.9rem;
+}
+.nav-logo-text{font-family:var(--serif);font-weight:700;font-size:.95rem;color:var(--navy)}
+.nav-logo-sub{font-size:.7rem;color:var(--text2);font-weight:400;margin-left:4px}
+.nav-r{display:flex;gap:20px;align-items:center}
+.nav-r a{color:var(--text2);text-decoration:none;font-size:.82rem;font-weight:500;transition:color .3s}
+.nav-r a:hover{color:var(--navy)}
+.nav-cta{
+  padding:8px 20px!important;border-radius:6px;font-weight:600!important;
+  background:var(--navy)!important;color:#fff!important;font-size:.8rem!important;
+  transition:all .3s!important;
+}
+.nav-cta:hover{background:var(--navy-light)!important;transform:translateY(-1px)}
+
+/* ═══ HERO ═══ */
+.hero{
+  padding:140px 32px 100px;position:relative;
+  background:linear-gradient(180deg,var(--navy) 0%,#1e3050 100%);
+  color:#fff;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:80px;
+  background:linear-gradient(to bottom,transparent,var(--bg));
+}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:4px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  font-size:.76rem;color:rgba(255,255,255,.8);letter-spacing:.06em;
+  margin-bottom:28px;
+  animation:fadeIn .8s ease-out both;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+
+.hero h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(1.8rem,4vw,3rem);
+  line-height:1.35;letter-spacing:-.01em;max-width:720px;
+  animation:slideUp .9s ease-out .15s both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-sub{
+  font-size:clamp(.92rem,1.5vw,1.05rem);max-width:600px;
+  color:rgba(255,255,255,.7);margin-top:20px;line-height:1.9;font-weight:300;
+  animation:slideUp .9s ease-out .3s both;
+}
+.hero-sub strong{color:#fff;font-weight:500}
+
+.hero-tags{
+  display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;
+  animation:slideUp .9s ease-out .45s both;
+}
+.hero-tag{
+  padding:5px 12px;border-radius:4px;font-size:.74rem;font-weight:500;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.85);
+}
+
+.hero-ctas{
+  display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;
+  animation:slideUp .9s ease-out .6s both;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:6px;
+  font-family:var(--sans);font-size:.88rem;font-weight:600;
+  text-decoration:none;cursor:pointer;border:none;transition:all .3s;
+}
+.btn-white{background:#fff;color:var(--navy);box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+.btn-outline:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5)}
+.btn-navy{background:var(--navy);color:#fff;box-shadow:0 2px 12px rgba(26,39,68,.2)}
+.btn-navy:hover{background:var(--navy-light);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--navy-pale);border-color:rgba(26,39,68,.15)}
+
+.hero-trust{
+  display:flex;gap:24px;margin-top:40px;flex-wrap:wrap;
+  animation:slideUp .9s ease-out .75s both;
+}
+.trust-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:.78rem;color:rgba(255,255,255,.6);
+}
+.trust-item .ic{font-size:.9rem}
+
+/* ═══ SECTIONS ═══ */
+section{padding:90px 32px}
+.container{max-width:1020px;margin:0 auto}
+.label{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;
+  color:var(--accent);font-weight:500;margin-bottom:8px;
+  text-transform:uppercase;
+}
+.stitle{font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,2.5vw,1.9rem);line-height:1.4;margin-bottom:12px;color:var(--navy)}
+.sdesc{color:var(--text2);max-width:540px;font-size:.94rem;margin-bottom:40px;line-height:1.9}
+
+/* ═══ CHALLENGES ═══ */
+.challenges{background:var(--bg2)}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ch-card{
+  padding:28px 24px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.03);
+}
+.ch-num{font-family:var(--mono);font-size:.68rem;color:var(--accent);letter-spacing:.08em;margin-bottom:10px;font-weight:500}
+.ch-title{font-family:var(--serif);font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:8px}
+.ch-desc{font-size:.84rem;color:var(--text2);line-height:1.8}
+
+/* ═══ PROGRAM ═══ */
+.program-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.program-left .stitle{max-width:380px}
+.program-statement{
+  font-family:var(--serif);font-size:1.05rem;
+  color:var(--navy);margin-bottom:20px;line-height:1.8;
+  padding-left:16px;border-left:3px solid var(--accent);
+}
+.program-checks{list-style:none;display:flex;flex-direction:column;gap:10px}
+.program-check{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;line-height:1.7}
+.program-check .ic{color:var(--green);flex-shrink:0;margin-top:4px;font-size:.85rem}
+.program-check strong{color:var(--navy);font-weight:600}
+
+.program-right{
+  padding:28px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.program-right h4{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;
+  color:var(--accent);margin-bottom:20px;font-weight:500;
+}
+.plan-tabs{display:flex;gap:4px;margin-bottom:20px}
+.plan-tab{
+  padding:8px 16px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;
+  background:var(--bg2);border:1px solid var(--border);color:var(--text2);transition:all .3s;
+}
+.plan-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.plan-tab:hover:not(.active){background:var(--bg3)}
+.plan-panel{display:none}
+.plan-panel.active{display:block}
+.plan-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);font-size:.86rem;
+}
+.plan-row:last-child{border:none}
+.plan-key{color:var(--text2)}
+.plan-val{font-weight:600;color:var(--navy)}
+.plan-note{margin-top:16px;padding:12px 14px;border-radius:6px;background:var(--accent-pale);font-size:.8rem;color:var(--accent);line-height:1.6}
+
+/* ═══ FLOW ═══ */
+.flow{background:var(--bg2)}
+.flow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:40px}
+.flow-step{
+  padding:24px 20px;border-radius:10px;text-align:center;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 1px 3px rgba(0,0,0,.03);
+  position:relative;transition:all .3s;
+}
+.flow-step:hover{box-shadow:0 3px 12px rgba(0,0,0,.06);transform:translateY(-2px)}
+.flow-num{font-family:var(--mono);font-size:.65rem;color:var(--accent);letter-spacing:.08em;margin-bottom:6px;font-weight:500}
+.flow-icon{font-size:1.6rem;margin-bottom:8px;display:block}
+.flow-title{font-family:var(--serif);font-weight:700;font-size:.88rem;color:var(--navy);margin-bottom:4px}
+.flow-desc{font-size:.78rem;color:var(--text2);line-height:1.6}
+.flow-arrow{position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.9rem;z-index:2}
+
+/* ═══ OUTCOMES ═══ */
+.outcomes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:40px}
+.oc-card{
+  padding:24px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.03);
+  display:flex;gap:16px;align-items:flex-start;
+}
+.oc-icon{
+  width:40px;height:40px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.oc-icon.blue{background:var(--accent-pale)}
+.oc-icon.green{background:var(--green-pale)}
+.oc-icon.warm{background:var(--warm-pale)}
+.oc-icon.navy{background:var(--navy-pale)}
+.oc-title{font-weight:600;font-size:.9rem;color:var(--navy);margin-bottom:3px}
+.oc-desc{font-size:.82rem;color:var(--text2);line-height:1.7}
+
+/* ═══ TARGETS ═══ */
+.targets{background:var(--bg2)}
+.tgt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.tgt-card{
+  padding:28px 22px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.03);transition:all .3s;
+}
+.tgt-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.06)}
+.tgt-icon{font-size:1.5rem;margin-bottom:10px;display:block}
+.tgt-title{font-family:var(--serif);font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:6px}
+.tgt-desc{font-size:.84rem;color:var(--text2);line-height:1.8;margin-bottom:12px}
+.tgt-example{
+  padding:10px 12px;border-radius:6px;
+  background:var(--navy-pale);font-size:.78rem;color:var(--navy-light);line-height:1.6;
+}
+
+/* ═══ TRUST ═══ */
+.trust-section{border-top:1px solid var(--border)}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.trust-card{
+  padding:22px 20px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);text-align:center;
+}
+.trust-num{font-family:var(--mono);font-weight:700;font-size:1.6rem;color:var(--navy);margin-bottom:2px}
+.trust-label{font-size:.82rem;color:var(--text2);line-height:1.5}
+
+/* ═══ FAQ ═══ */
+.faq{background:var(--bg2)}
+.faq-list{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:4px}
+.faq-item{border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.faq-q{
+  padding:16px 22px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--navy);
+  display:flex;justify-content:space-between;align-items:center;transition:background .3s;
+}
+.faq-q:hover{background:var(--bg2)}
+.faq-q .arr{color:var(--text3);transition:transform .3s;font-size:.7rem}
+.faq-item.open .faq-q .arr{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-a-inner{padding:0 22px 16px;font-size:.86rem;color:var(--text2);line-height:1.9}
+
+/* ═══ CTA ═══ */
+.cta{
+  background:var(--navy);color:#fff;text-align:center;
+  padding:100px 32px;position:relative;
+}
+.cta h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.4;margin-bottom:14px}
+.cta .sub{color:rgba(255,255,255,.65);font-size:.95rem;max-width:480px;margin:0 auto 36px;line-height:1.9;font-weight:300}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.cta-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:720px;margin:0 auto}
+.cta-card{
+  padding:20px 16px;border-radius:8px;text-align:left;text-decoration:none;color:inherit;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);transition:all .3s;
+}
+.cta-card:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.cta-card-icon{font-size:1rem;margin-bottom:4px;display:block}
+.cta-card-title{font-weight:600;font-size:.84rem;margin-bottom:3px}
+.cta-card-desc{font-size:.74rem;color:rgba(255,255,255,.55);line-height:1.6}
+.cta-mail{margin-top:28px;font-size:.84rem;color:rgba(255,255,255,.5)}
+.cta-mail a{color:rgba(255,255,255,.8);text-decoration:none;font-weight:500}
+.cta-mail a:hover{text-decoration:underline;color:#fff}
+
+footer{padding:28px;text-align:center;font-size:.72rem;color:var(--text3);border-top:1px solid var(--border)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .ch-grid,.tgt-grid,.trust-grid{grid-template-columns:1fr}
+  .program-grid{grid-template-columns:1fr}
+  .flow-steps{grid-template-columns:1fr 1fr}
+  .flow-arrow{display:none}
+  .outcomes-grid{grid-template-columns:1fr}
+  .cta-cards{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .flow-steps{grid-template-columns:1fr}
+  .hero-trust{flex-direction:column}
+  nav{padding:10px 16px}
+  .nav-r a:not(.nav-cta){display:none}
+  .nav-logo-sub{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">N</div>
+    <span class="nav-logo-text">NovelForge <span class="nav-logo-sub">Education</span></span>
+  </a>
+  <div class="nav-r">
+    <a href="#program">プログラム</a>
+    <a href="#flow">実施の流れ</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://forms.gle/vxeFuYFUSnSQSH4P9" target="_blank" rel="noopener" class="nav-cta">資料請求・お問い合わせ</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">教育機関・自治体・企業研修 向けプログラム</div>
+    <h1>「AIと共に書く」体験が、<br>これからのリテラシー教育になる。</h1>
+    <p class="hero-sub">
+      生成AIの仕組みを<strong>「使いながら学ぶ」</strong>実践型ワークショップ。<br>
+      参加者はYAML設定を編集するだけで、挿絵付きの小説を自動生成。<br>
+      プログラミング知識は不要。<strong>完成作品はWebでその場で公開。</strong>
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag">📎 プログラミング不要</span>
+      <span class="hero-tag">🏫 1コマ90分で実施可能</span>
+      <span class="hero-tag">🔒 外部API不使用・個人情報送信なし</span>
+      <span class="hero-tag">📖 成果物：挿絵付きWeb小説</span>
+    </div>
+    <div class="hero-ctas">
+      <a href="https://forms.gle/vxeFuYFUSnSQSH4P9" target="_blank" rel="noopener" class="btn btn-white">資料請求・ご相談 →</a>
+      <a href="#program" class="btn btn-outline">プログラム詳細を見る</a>
+    </div>
+    <div class="hero-trust">
+      <span class="trust-item"><span class="ic">✓</span> 完全ローカル実行（クラウド不要）</span>
+      <span class="trust-item"><span class="ic">✓</span> 生徒の個人情報は外部送信されません</span>
+      <span class="trust-item"><span class="ic">✓</span> 文部科学省「情報活用能力」に対応</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHALLENGES ═══ -->
+<section class="challenges">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">BACKGROUND</div>
+      <div class="stitle">AI教育の現場が抱える3つの課題</div>
+    </div>
+    <div class="ch-grid">
+      <div class="ch-card reveal">
+        <div class="ch-num">課題 01</div>
+        <div class="ch-title">「AIは便利」で止まっている</div>
+        <div class="ch-desc">ChatGPTの紹介だけでは「使う」体験にならない。仕組みの理解も、創造的活用の実感も得られないまま授業が終わる。</div>
+      </div>
+      <div class="ch-card reveal d1">
+        <div class="ch-num">課題 02</div>
+        <div class="ch-title">個人情報・著作権のリスク</div>
+        <div class="ch-desc">外部APIを使う授業は、生徒の入力データが学習に利用される懸念がある。GIGAスクール端末のポリシーとも衝突しやすい。</div>
+      </div>
+      <div class="ch-card reveal d2">
+        <div class="ch-num">課題 03</div>
+        <div class="ch-title">「成果物」が残らない</div>
+        <div class="ch-desc">座学では記憶に残りにくい。参加者が「自分の作品」を持ち帰れる体験設計でなければ、学びは定着しない。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROGRAM ═══ -->
+<section class="program" id="program">
+  <div class="container">
+    <div class="program-grid">
+      <div class="program-left reveal">
+        <div class="label">PROGRAM</div>
+        <div class="stitle">NovelForge Education が<br>3つの課題を同時に解決します</div>
+        <div class="program-statement">参加者がYAMLファイルを編集するだけで、AIが挿絵付きの小説を自動生成。完成作品はその場でWebに公開。「つくる」体験を通じて、AIリテラシーと創造性を同時に育む。</div>
+        <ul class="program-checks">
+          <li class="program-check"><span class="ic">✓</span><span><strong>完全ローカル実行</strong> — 外部APIを一切使用しません。生徒・参加者の入力データは施設内ネットワークから一歩も出ません。</span></li>
+          <li class="program-check"><span class="ic">✓</span><span><strong>プログラミング不要</strong> — YAMLの「穴埋め」でキャラクター設定・世界観を定義。テンプレート付きで、小学校高学年から参加可能。</span></li>
+          <li class="program-check"><span class="ic">✓</span><span><strong>持ち帰れる成果物</strong> — 挿絵付きWeb小説が自動生成され、URLで共有可能。参加者は「自分の作品」を家族や友人に見せられます。</span></li>
+          <li class="program-check"><span class="ic">✓</span><span><strong>AIの仕組みを体感</strong> — プロンプト設計→生成→品質チェック→修正の工程を通じて、AI活用の実践力が身につきます。</span></li>
+        </ul>
+      </div>
+      <div class="program-right reveal d2">
+        <h4>PROGRAM PLANS</h4>
+        <div class="plan-tabs">
+          <div class="plan-tab active" data-plan="basic">基本プラン</div>
+          <div class="plan-tab" data-plan="standard">標準プラン</div>
+          <div class="plan-tab" data-plan="advanced">発展プラン</div>
+        </div>
+        <div class="plan-panel active" id="plan-basic">
+          <div class="plan-row"><span class="plan-key">対象</span><span class="plan-val">中学〜高校・企業研修</span></div>
+          <div class="plan-row"><span class="plan-key">所要時間</span><span class="plan-val">90分 × 1コマ</span></div>
+          <div class="plan-row"><span class="plan-key">参加人数</span><span class="plan-val">10〜30名</span></div>
+          <div class="plan-row"><span class="plan-key">成果物</span><span class="plan-val">3章構成の短編小説</span></div>
+          <div class="plan-row"><span class="plan-key">必要設備</span><span class="plan-val">GPU搭載PC 1台 + WiFi</span></div>
+          <div class="plan-note">💡 もっとも手軽なプラン。「AIとは何か」を体験するための入門編。</div>
+        </div>
+        <div class="plan-panel" id="plan-standard">
+          <div class="plan-row"><span class="plan-key">対象</span><span class="plan-val">高校・大学・企業研修</span></div>
+          <div class="plan-row"><span class="plan-key">所要時間</span><span class="plan-val">90分 × 3コマ</span></div>
+          <div class="plan-row"><span class="plan-key">参加人数</span><span class="plan-val">10〜30名</span></div>
+          <div class="plan-row"><span class="plan-key">成果物</span><span class="plan-val">10章構成の長編小説（挿絵付き）</span></div>
+          <div class="plan-row"><span class="plan-key">追加内容</span><span class="plan-val">プロンプト設計・品質改善演習</span></div>
+          <div class="plan-note">💡 AI活用の実践力を鍛えるメインプラン。プロンプトの書き方による品質差を体験。</div>
+        </div>
+        <div class="plan-panel" id="plan-advanced">
+          <div class="plan-row"><span class="plan-key">対象</span><span class="plan-val">大学・専門学校・企業</span></div>
+          <div class="plan-row"><span class="plan-key">所要時間</span><span class="plan-val">半日〜2日間</span></div>
+          <div class="plan-row"><span class="plan-key">参加人数</span><span class="plan-val">5〜20名</span></div>
+          <div class="plan-row"><span class="plan-key">成果物</span><span class="plan-val">オリジナルIP作品 + 続編</span></div>
+          <div class="plan-row"><span class="plan-key">追加内容</span><span class="plan-val">パイプライン構築・カスタマイズ実習</span></div>
+          <div class="plan-note">💡 技術者・クリエイター育成向け。AIパイプラインの設計思想まで踏み込む上級編。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLOW ═══ -->
+<section class="flow" id="flow">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">WORKSHOP FLOW</div>
+      <div class="stitle">ワークショップの流れ（90分の場合）</div>
+      <div class="sdesc">講義は最小限。手を動かす時間を最大化する設計です。</div>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step reveal">
+        <div class="flow-num">15分</div>
+        <span class="flow-icon">🎤</span>
+        <div class="flow-title">導入講義</div>
+        <div class="flow-desc">AIの仕組みを簡潔に解説。「プロンプトとは何か」を5分で理解。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step reveal d1">
+        <div class="flow-num">30分</div>
+        <span class="flow-icon">📝</span>
+        <div class="flow-title">設定作成</div>
+        <div class="flow-desc">テンプレートに沿ってYAML編集。キャラ・世界観・章構成を穴埋め。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step reveal d2">
+        <div class="flow-num">30分</div>
+        <span class="flow-icon">🤖</span>
+        <div class="flow-title">AI生成＋修正</div>
+        <div class="flow-desc">パイプライン実行。生成結果を確認し、プロンプトを改善して再生成。</div>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-step reveal d3">
+        <div class="flow-num">15分</div>
+        <span class="flow-icon">📖</span>
+        <div class="flow-title">発表・振り返り</div>
+        <div class="flow-desc">完成作品をWeb公開。互いの作品を読み合い、AI活用の気づきを共有。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LEARNING OUTCOMES ═══ -->
+<section class="outcomes">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">LEARNING OUTCOMES</div>
+      <div class="stitle">参加者が得られるもの</div>
+      <div class="sdesc">単なる「AIツールの使い方」ではなく、情報活用能力・創造力・批判的思考力を育みます。</div>
+    </div>
+    <div class="outcomes-grid">
+      <div class="oc-card reveal">
+        <div class="oc-icon blue">🧠</div>
+        <div>
+          <div class="oc-title">AIリテラシーの実践的理解</div>
+          <div class="oc-desc">プロンプト設計→生成→品質チェック→改善のサイクルを体験。「AIに何ができて、何ができないか」を肌で理解。</div>
+        </div>
+      </div>
+      <div class="oc-card reveal d1">
+        <div class="oc-icon green">✍️</div>
+        <div>
+          <div class="oc-title">創造性と表現力</div>
+          <div class="oc-desc">世界観の構築、キャラクターの設計、物語の構成——AIを道具として使いこなしながら、自分の創造力を発揮する体験。</div>
+        </div>
+      </div>
+      <div class="oc-card reveal">
+        <div class="oc-icon warm">🔍</div>
+        <div>
+          <div class="oc-title">批判的思考力</div>
+          <div class="oc-desc">AI生成物の品質を評価し、「何がおかしいか」「どう改善するか」を考える力。著作権・倫理的課題への理解。</div>
+        </div>
+      </div>
+      <div class="oc-card reveal d1">
+        <div class="oc-icon navy">📖</div>
+        <div>
+          <div class="oc-title">持ち帰れる「自分の作品」</div>
+          <div class="oc-desc">挿絵付きのWeb小説が完成し、URLで世界中に公開できます。家族や友人に見せられる、具体的な学びの成果。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TARGETS ═══ -->
+<section class="targets">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">TARGET AUDIENCE</div>
+      <div class="stitle">導入対象</div>
+    </div>
+    <div class="tgt-grid">
+      <div class="tgt-card reveal">
+        <span class="tgt-icon">🏫</span>
+        <div class="tgt-title">教育機関（中学・高校・大学）</div>
+        <div class="tgt-desc">情報科、総合的な学習の時間、探究学習、文芸部活動などに。GIGAスクール端末のポリシーに抵触しないローカル実行。</div>
+        <div class="tgt-example">導入例：高校情報科「AI活用と創造性」全3回・90分×3コマ</div>
+      </div>
+      <div class="tgt-card reveal d1">
+        <span class="tgt-icon">🏛️</span>
+        <div class="tgt-title">自治体・公共施設</div>
+        <div class="tgt-desc">図書館、公民館、生涯学習センターでの「AI×創作」体験講座に。高齢者から小学生まで幅広い年齢層に対応。</div>
+        <div class="tgt-example">導入例：市立図書館「親子で作るAI絵本」ワークショップ・90分</div>
+      </div>
+      <div class="tgt-card reveal d2">
+        <span class="tgt-icon">🏢</span>
+        <div class="tgt-title">企業研修</div>
+        <div class="tgt-desc">DX研修、AI活用研修の実践パートとして。座学だけでは得られない「AIと協働する」感覚を短時間で体験。</div>
+        <div class="tgt-example">導入例：新入社員研修「AI時代の仕事術」半日ワークショップ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRUST NUMBERS ═══ -->
+<section class="trust-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="label">SAFETY & RELIABILITY</div>
+      <div class="stitle">安全性と信頼性</div>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card reveal">
+        <div class="trust-num">0件</div>
+        <div class="trust-label">外部へのデータ送信<br><small style="color:var(--text3)">完全ローカル実行</small></div>
+      </div>
+      <div class="trust-card reveal d1">
+        <div class="trust-num">¥0</div>
+        <div class="trust-label">外部API利用料<br><small style="color:var(--text3)">追加コスト一切なし</small></div>
+      </div>
+      <div class="trust-card reveal d2">
+        <div class="trust-num">OSS</div>
+        <div class="trust-label">使用モデル<br><small style="color:var(--text3)">ライセンス面の懸念なし</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">FAQ</div>
+      <div class="stitle">よくあるご質問</div>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q">必要な設備は何ですか？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">NVIDIA GPU搭載PC（RTX 3060以上推奨）が1台あれば実施可能です。参加者はブラウザからWeb UIにアクセスするため、各自の端末はChromebookやタブレットでも構いません。施設内WiFi環境が必要です。GPU搭載PCの貸出・持ち込みについてもご相談いただけます。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">GIGAスクール端末で使えますか？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">参加者の端末からはブラウザでWeb UIにアクセスするだけなので、GIGAスクール端末の標準ポリシーに抵触しません。AI処理は講師側のGPU搭載PCで行い、外部APIへの通信は一切発生しません。各自治体のポリシーに応じたカスタマイズもご相談ください。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">生徒の個人情報は安全ですか？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">完全ローカル実行のため、生徒が入力したデータ（キャラ名、物語設定等）は施設内ネットワークから外部に送信されることはありません。生成に使用するAIモデルもローカルに設置されており、クラウドサービスは一切使用しません。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">講師派遣は可能ですか？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">はい。講師派遣型と、先生方への事前研修型（Train the Trainer）の2パターンに対応しています。オンラインでの実施支援も可能です。詳細はお問い合わせください。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">費用はどのくらいですか？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">プログラム内容・参加人数・実施回数により異なります。まずはお気軽にお問い合わせください。予算に応じた柔軟なプラン設計が可能です。公共施設・教育機関向けの特別料金もご用意しています。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">不適切な内容が生成される心配は？<span class="arr">▼</span></div>
+        <div class="faq-a"><div class="faq-a-inner">教育現場向けに、不適切表現のフィルタリング設定を事前に行います。また、YAML設定のテンプレートを制御することで、参加者が入力できる範囲を適切に制限できます。生成結果は講師側でリアルタイムにモニタリングすることも可能です。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta" id="contact">
+  <h2 class="reveal">まずはお気軽にご相談ください。</h2>
+  <p class="sub reveal d1">プログラム資料の送付、ご予算に応じたプラン設計、<br>オンラインでのデモ実施など、柔軟に対応いたします。</p>
+  <div class="cta-btns reveal d2">
+    <a href="https://forms.gle/vxeFuYFUSnSQSH4P9" target="_blank" rel="noopener" class="btn btn-white">📩 お問い合わせフォーム</a>
+    <a href="mailto:admin@wkjp.net" class="btn btn-outline">✉ admin@wkjp.net にメール</a>
+  </div>
+  <div class="cta-cards reveal d3">
+    <a href="https://forms.gle/vxeFuYFUSnSQSH4P9" target="_blank" rel="noopener" class="cta-card">
+      <span class="cta-card-icon">🏫</span>
+      <div class="cta-card-title">教育機関の方</div>
+      <div class="cta-card-desc">カリキュラムへの組込みや課外活動での導入についてご相談ください。</div>
+    </a>
+    <a href="https://forms.gle/vxeFuYFUSnSQSH4P9" target="_blank" rel="noopener" class="cta-card">
+      <span class="cta-card-icon">🏛️</span>
+      <div class="cta-card-title">自治体・公共施設の方</div>
+      <div class="cta-card-desc">生涯学習講座やイベント企画としてのプログラム設計をお手伝いします。</div>
+    </a>
+    <a href="mailto:admin@wkjp.net" class="cta-card">
+      <span class="cta-card-icon">🏢</span>
+      <div class="cta-card-title">企業研修担当の方</div>
+      <div class="cta-card-desc">DX研修・AI活用研修の実践パートとしての導入をご提案します。</div>
+    </a>
+  </div>
+  <div class="cta-mail reveal d4">
+    <p>メールでのお問い合わせ: <a href="mailto:admin@wkjp.net">admin@wkjp.net</a></p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 NovelForge Education — AI×創作リテラシー教育プログラム</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50));
+
+// Plan tabs
+document.querySelectorAll('.plan-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.plan-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('plan-'+tab.dataset.plan).classList.add('active');
+  });
+});
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement,a=item.querySelector('.faq-a'),wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>{i.classList.remove('open');i.querySelector('.faq-a').style.maxHeight=null});
+    if(!wasOpen){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px'}
+  });
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}});
+});
+</script>
+</body>
+</html>
